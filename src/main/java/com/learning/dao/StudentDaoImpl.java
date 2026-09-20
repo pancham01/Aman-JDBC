@@ -2,6 +2,7 @@ package com.learning.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,7 +12,7 @@ import com.learning.entity.Student;
 
 public class StudentDaoImpl implements StudentDao {
 
-	public static final String INSERT_QUERY = "INSERT INTO STUDENT(ID,NAME,GENDER,AGE) VALUES(%d,'%s','%s',%d)";
+	public static final String INSERT_QUERY = "INSERT INTO STUDENT(ID,NAME,GENDER,AGE) VALUES(?,?,?,?)";
 	public static final String UPDATE_QUERY = "UPDATE STUDENT SET NAME = '%s' , AGE = %d WHERE ID = %d";
 	public static final String DELETE_QUERY = "DELETE FROM STUDENT WHERE ID = %d";
 	public static final String SELECT_QUERY = "SELECT * FROM STUDENT ";
@@ -33,14 +34,16 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public void saveStudent(Student s) throws SQLException {
 
-		Statement statement = conn.createStatement();
-
-//		statement.executeUpdate("INSERT INTO STUDENT(ID,NAME,GENDER,AGE) VALUES(" + s.getId() + ",'" + s.getName()
-//				+ "','" + s.getGender() + "'," + s.getAge() + ")");
-
-		statement.executeUpdate(String.format(INSERT_QUERY, s.getId(), s.getName(), s.getGender(), s.getAge()));
-		statement.close();
-		System.err.println(String.format(INSERT_QUERY, s.getId(), s.getName(), s.getGender(), s.getAge()));
+		PreparedStatement ps = conn.prepareStatement(INSERT_QUERY);
+		
+		ps.setInt(1, s.getId());
+		ps.setString(2, s.getName());
+		ps.setString(3, s.getGender());
+		ps.setInt(4, s.getAge());
+		
+		ps.executeUpdate();
+		ps.close();
+		System.err.println(INSERT_QUERY);
 
 	}
 
@@ -120,10 +123,13 @@ public class StudentDaoImpl implements StudentDao {
 	@Override
 	public void printStudentByName(String name) {
 		
-		
-		try (Statement statement = conn.createStatement()) {
+		System.out.println("StudentDaoImpl.printStudentByName()");
+		try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM STUDENT WHERE NAME = ?")) {
 
-			ResultSet rs = statement.executeQuery("SELECT * FROM STUDENT WHERE NAME = '"+name);
+			ps.setString(1, name);
+			
+			
+			ResultSet rs = ps.executeQuery();
 
 			while (rs.next()) {
 

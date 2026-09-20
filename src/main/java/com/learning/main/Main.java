@@ -11,18 +11,18 @@ public class Main {
 	public static void main(String[] args) throws SQLException {
 
 		Student stu1 = new Student();
-		stu1.setId(10);
-		stu1.setName("Ankit Kumar");
+		stu1.setId(11);
+		stu1.setName("Ommy Kumar");
 		stu1.setGender("Male");
 		stu1.setAge(54);
 
 		StudentDao dao = new StudentDaoImpl();
-//		dao.saveStudent(stu1);
+		dao.saveStudent(stu1);
 //		dao.updateStudent(stu1);
 //		dao.deleteStudent(10);
-//		dao.printAllStudent();
+		dao.printAllStudent();
 //		System.out.println(dao.getStudentById(3));
-		dao.printStudentByName("csdfew' or 1=1");
+//		dao.printStudentByName("csdfew' or 1=1");
 		System.out.println("Main.main()");
 
 	}
